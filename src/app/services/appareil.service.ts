@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import { Subject } from 'rxjs/Subject';
+import {HttpClient} from '@angular/common/http';
 
 interface AppareilInterface {
   id: number;
@@ -31,6 +32,37 @@ export class AppareilService {
       status: 'éteint'
     }
   ];
+
+  constructor(private httpClient: HttpClient) { }
+
+  private readonly _FIREBASE_APPAREIL_URL = 'https://jeanne-fourneau.firebaseio.com/appareils.json';
+
+  saveAppareilsToServer() {
+    this.httpClient
+      .put(this._FIREBASE_APPAREIL_URL, this.appareils)
+      .subscribe(
+        () => {
+          console.log('Enregistrement terminé !');
+        },
+        (error) => {
+          console.log('Erreur ! : ' + error);
+        }
+      );
+  }
+
+  getAppareilsFromServer() {
+    this.httpClient
+      .get<any[]>(this._FIREBASE_APPAREIL_URL)
+      .subscribe(
+        (response) => {
+          this.appareils = response;
+          this.emitAppareilSubject();
+        },
+        (error) => {
+          console.log('Erreur ! : ' + error);
+        }
+      );
+  }
 
   getAppareilById(id: number) {
     const appareil = this.appareils.find(

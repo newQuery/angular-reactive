@@ -23,6 +23,14 @@ export class AppareilViewComponent implements OnInit, OnDestroy {
 
   constructor(private appareilService: AppareilService) { }
 
+  onSave() {
+    this.appareilService.saveAppareilsToServer();
+  }
+
+  onFetch() {
+    this.appareilService.getAppareilsFromServer();
+  }
+
   ngOnInit() {
     this.appareilSubscription = this.appareilService.appareilsSubject.subscribe(
       (appareils: any[]) => {
